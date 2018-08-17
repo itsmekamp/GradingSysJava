@@ -6,19 +6,6 @@ import java.util.Scanner;
 
 public class Main {
 	static DecimalFormat df = new DecimalFormat("##.00");
-	public static String ordinal(int num) {
-		String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
-	    switch (num % 100) {
-	    case 11:
-	    case 12:
-	    case 13:
-	        return num + "th";
-	    default:
-	        return num + sufixes[num % 10];
-
-	    }
-	}
-	
 	
 	public static double avg(List<Integer> gradeList) {
 	    long sum = 0;
@@ -49,6 +36,40 @@ public class Main {
 			return false;
 		}
 	}
+	
+	public static String ordinal(int num) {
+		String suffix = "";
+		String numS = Integer.toString(num);
+		char[] numA = numS.toCharArray();
+		if (num < 20) {
+			if (num == 1) {
+				suffix = "st";
+			} else if (num == 2) {
+				suffix = "nd";
+			} else if (num == 3) {
+				suffix = "rd";
+			} else {
+				suffix = "th";
+			}
+		} else {
+			char tens = numA[numA.length-2];
+			char unit = numA[numA.length-1];
+			if (tens == '1') {
+				suffix = "th";
+			} else {
+				if (unit == '1') {
+					suffix = "st";
+				} else if (unit == '2') {
+					suffix = "nd";
+				} else if (unit == '3') {
+					suffix = "rd";
+				} else {
+					suffix = "th";
+				}
+			}
+		}
+		return (numS + suffix);
+	}
 	public static void main(String[] args) {
 		List<Integer> grades = new ArrayList<Integer>();
 		Scanner input = new Scanner(System.in);
@@ -62,13 +83,16 @@ public class Main {
 			case "#view":
 				System.out.println(grades);
 			case "":
-				System.out.println("Invalid Grade. ErrorCode:EmptyInput");
+				System.out.println("Invalid Grade. ErrorCode: EmptyInput");
 			case "#avg":
 				System.out.println("Your average grade is " + df.format(avg(grades)));
 				running = false;
 				break;
 			case "#letter":
 				System.out.println("Your letter score is " + letterScore(grades));
+				running = false;
+				break;
+			case "#x":
 				running = false;
 				break;
 			default:
@@ -81,7 +105,7 @@ public class Main {
 						count += 1;
 					}
 				} else {
-					System.out.println("Invalid Grade. ErrorCode:NotInteger");
+					System.out.println("Invalid Grade. ErrorCode: NotInteger");
 				}
 			}
 		}
